@@ -1,16 +1,21 @@
-## Plot histogram of global active power
+## Plot line graph of global active power vs datetimes
 ## Assumes household_power_consumption.txt is in the current work folder.
-
-## ARGUMENTS:
-## file: filepath to txt holding the data. 
 ## 
-## device: graphical output device (default to png). The only other accetable 
+## ARGUMENTS:
+## file: filepath to txt holding the data.
+## 
+## device: graphical output device (default to png). The only other accetable
 ## value is 'display'
 ## 
 ## data: optional argument to pass in formatted dataframe object for the plot
+##
+## Note: this function allows optional arbitrary plot settings to be specified 
+## in the arguments by the user.  This is meant to for label differences in 
+## plot 4.
 
-plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
-                  data = NULL) {
+
+plot2 <- function(file = 'household_power_consumption.txt', device = 'png', 
+                  data = NULL, ...) {
     
     ## Data parser to read the Electric power consumption data
     ## Hardcoded to start from the first entry on 2007-02-01 and stop at last 
@@ -56,7 +61,6 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
     }
     
     
-    
     if (device == 'png' || device == 'display') {
         
         if (is.null(data)) {
@@ -66,12 +70,22 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
         
         if (device == 'png') {
             # open PNG device
-            png('plot1.png')
+            png('plot2.png')
         }
         
-        # plot histogram
-        hist(data$Global_active_power, col = 'red', main = 'Global Active Power', 
-             xlab = 'Global Active Power (kilowatts)')
+        args <- list(...)
+        
+        if (length(args)) {
+            # plot line graph with user specified setting
+            plot(data$Timestamps, data$Global_active_power, ...)
+            
+            
+        } else {
+            # plot line graph with default setting
+            plot(data$Timestamps, data$Global_active_power, type = 'l', 
+                 ylab = 'Global Active Power (kilowatts)', xlab = '')
+            
+        }
         
         if (device == 'png') {
             # save and close device

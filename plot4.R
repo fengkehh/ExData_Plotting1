@@ -1,15 +1,20 @@
-## Plot histogram of global active power
-## Assumes household_power_consumption.txt is in the current work folder.
-
-## ARGUMENTS:
-## file: filepath to txt holding the data. 
+## (2,2) matrix plot of the following (top left to bottom right, row first)
+## 1. Global Active Power vs datetime
+## 2. Voltage vs datetime
+## 3. Energy sub metering vs datetime
+## 4. Global Active Power vs datetime
+## Assumes household_power_consumption.txt, plot2.R and plot3.R are in the 
+## current work folder.
 ## 
-## device: graphical output device (default to png). The only other accetable 
+## ARGUMENTS:
+## file: filepath to txt holding the data.
+## 
+## device: graphical output device (default to png). The only other accetable
 ## value is 'display'
 ## 
 ## data: optional argument to pass in formatted dataframe object for the plot
 
-plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
+plot4 <- function(file = 'household_power_consumption.txt', device = 'png',
                   data = NULL) {
     
     ## Data parser to read the Electric power consumption data
@@ -55,7 +60,9 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
         
     }
     
-    
+    # load required functions
+    source('plot2.R')
+    source('plot3.R')
     
     if (device == 'png' || device == 'display') {
         
@@ -65,13 +72,28 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
         }
         
         if (device == 'png') {
-            # open PNG device
-            png('plot1.png')
+            # open png device
+            png('plot4.png')
         }
         
-        # plot histogram
-        hist(data$Global_active_power, col = 'red', main = 'Global Active Power', 
-             xlab = 'Global Active Power (kilowatts)')
+        # set matrix format
+        par(mfrow = c(2, 2))
+        
+        ## 1. Global Active Power vs datetime
+        plot2(data = data, device = 'display', type = 'l', 
+              ylab = 'Global Active Power', xlab = '')
+        
+        ## 2. Voltage vs datetime
+        plot(data$Timestamps, data$Voltage, type = 'l', ylab = 'Voltage', 
+             xlab = 'datetime')
+        
+        ## 3. Energy sub metering vs datetime
+        plot3(data = data, device = 'display')
+        
+        ## 4. Global Active Power vs datetime
+        plot(data$Timestamps, data$Global_reactive_power, type = 'l', 
+             col = 'black', ylab = 'Global_reactive_power', xlab = 'datetime')
+        
         
         if (device == 'png') {
             # save and close device

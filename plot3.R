@@ -1,15 +1,15 @@
-## Plot histogram of global active power
+## Plot line graph of energy sub meterings vs datetimes
 ## Assumes household_power_consumption.txt is in the current work folder.
-
-## ARGUMENTS:
-## file: filepath to txt holding the data. 
 ## 
-## device: graphical output device (default to png). The only other accetable 
+## ARGUMENTS:
+## file: filepath to txt holding the data.
+## 
+## device: graphical output device (default to png). The only other accetable
 ## value is 'display'
 ## 
 ## data: optional argument to pass in formatted dataframe object for the plot
 
-plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
+plot3 <- function(file = 'household_power_consumption.txt', device='png', 
                   data = NULL) {
     
     ## Data parser to read the Electric power consumption data
@@ -56,7 +56,6 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
     }
     
     
-    
     if (device == 'png' || device == 'display') {
         
         if (is.null(data)) {
@@ -66,21 +65,35 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
         
         if (device == 'png') {
             # open PNG device
-            png('plot1.png')
+            png('plot3.png')
         }
         
-        # plot histogram
-        hist(data$Global_active_power, col = 'red', main = 'Global Active Power', 
-             xlab = 'Global Active Power (kilowatts)')
+        # Plot line graphs
+        
+        # color array
+        cols <- c('black', 'red', 'blue')
+        
+        # submeter 1 and set up y label
+        plot(data$Timestamps, data$Sub_metering_1, type = 'l', col = cols[1], 
+             ylab = 'Energy sub metering', xlab = '')
+        
+        # submeter 2
+        lines(data$Timestamps, data$Sub_metering_2, type = 'l', col = cols[2])
+        
+        # submeter 3
+        lines(data$Timestamps, data$Sub_metering_3, type = 'l', col = cols[3])
+        
+        # add legend
+        legend('topright', legend = 
+                   names(data)[(length(names(data)) - 2):length(names(data))], 
+               col = cols, lty = 1)
         
         if (device == 'png') {
             # save and close device
             dev.off()
         }
-        
     } else {
         stop('invalid graphic device')
     }
-    
     
 }
