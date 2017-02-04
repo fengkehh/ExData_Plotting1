@@ -12,6 +12,27 @@
 plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
                   data = NULL) {
     
+    # Date when data was downloaded if the internal download routine was used.
+    file_name <- 'Existing data used.'
+    
+    # check if file exists. If it doesn't, try default. If still fails, 
+    # download & extract, then set file back to default.
+    if (!file.exists(file)) {
+        if (!file.exists('household_power_consumption.txt')) {
+            # Set file name to the download date.
+            file_name <- paste(as.Date(Sys.time()), '.zip')
+            
+            download.file('https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip', 
+                          destfile = file_name)
+            
+            unzip(file_name)
+        }
+        
+        
+        file <- 'household_power_consumption.txt'
+        
+    }
+    
     ## Data parser to read the Electric power consumption data
     ## Hardcoded to start from the first entry on 2007-02-01 and stop at last 
     ## entry for 2007-02-02.
@@ -82,5 +103,6 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
         stop('invalid graphic device')
     }
     
-    
+    # Return name of the current data zip or mention existing data used.
+    file_name
 }
