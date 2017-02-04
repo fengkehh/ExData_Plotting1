@@ -61,7 +61,7 @@ plot1 <- function(file = 'household_power_consumption.txt', device = 'png',
         
         if (is.null(data)) {
             # Parse data
-            data <- data_parser()
+            data <- data_parser(file)
         }
         
         if (device == 'png') {
